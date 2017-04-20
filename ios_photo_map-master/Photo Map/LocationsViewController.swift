@@ -7,8 +7,17 @@
 //
 
 import UIKit
+import MapKit
+
+// Protocol definition - top of LocationsViewController.swift
+protocol LocationsViewControllerDelegate : class {
+    func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber)
+}
+
 
 class LocationsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+
+    weak var delegate : LocationsViewControllerDelegate!
 
     // TODO: Fill in actual CLIENT_ID and CLIENT_SECRET
     let CLIENT_ID = "QA1L0Z0ZNA2QVEEDHFPQWK0I5F1DE3GPLSNW4BZEBGJXUCFL"
@@ -25,8 +34,11 @@ class LocationsViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.dataSource = self
         tableView.delegate = self
         searchBar.delegate = self
+       
     }
 
+
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -55,6 +67,11 @@ class LocationsViewController: UIViewController, UITableViewDelegate, UITableVie
         let lngString = "\(lng)"
 
         print(latString + " " + lngString)
+        
+        delegate.locationsPickedLocation(controller: self, latitude: lat, longitude: lng)
+        
+        // Return to the PhotoMapViewController
+        navigationController?.popViewController(animated: true)
     }
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -95,5 +112,7 @@ class LocationsViewController: UIViewController, UITableViewDelegate, UITableVie
         });
         task.resume()
     }
+    
+    
 
 }
